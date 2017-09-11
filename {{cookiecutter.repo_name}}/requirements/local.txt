@@ -1,0 +1,5 @@
+-r test.txt
+# Tooling
+bumpversion
+wheel
+invoke
