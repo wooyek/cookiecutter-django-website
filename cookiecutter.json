@@ -1,0 +1,14 @@
+{
+  "full_name": "Janusz Skonieczny",
+  "email": "js+pypi@bravelabs.pl",
+  "github_username": "wooyek",
+  "project_name": "Django Website Project",
+  "repo_name": "{{ cookiecutter.project_name.lower()|replace(' ', '-') }}",
+  "app_name": "{{ cookiecutter.repo_name.lower()|replace(' ', '_')|replace('-', '_') }}",
+  "app_config_name": "{{ cookiecutter.app_name.replace('_', ' ')|title()|replace(' ', '') }}Config",
+  "project_short_description": "Your website project description goes here",
+  "version": "0.1.0",
+  "open_source_license": ["MIT", "BSD", "ISCL", "Apache Software License 2.0", "Not open source"],
+  "create_virtual_environment": "Y",
+  "git_init": "Y"
+}
