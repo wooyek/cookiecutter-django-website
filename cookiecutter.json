@@ -1,6 +1,6 @@
 {
   "full_name": "Janusz Skonieczny",
-  "email": "js+pypi@bravelabs.pl",
+  "email": "janusz@example.com",
   "github_username": "wooyek",
   "project_name": "Django Website Project",
   "repo_name": "{{ cookiecutter.project_name.lower()|replace(' ', '-') }}",
