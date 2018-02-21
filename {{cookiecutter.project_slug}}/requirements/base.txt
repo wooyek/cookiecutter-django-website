@@ -1,80 +1,30 @@
-# {{ cookiecutter.project_name }} dependencies
+# {{ cookiecutter.project_name }} dependencies 
+# Django maybe missing here if multiple verssions are to be tested and installed by tox
 # For development we keep them unfreezed to work and test on newest versions as soon as they are released
-Django>=1.11
-# Here are some popular dependencies
-pytz
-pycountry
-isoweek
-markdown
-html2text
-requests
-psycopg2
+# Freezing can be perforemd by pip-compile or pipenv
+
+click
+django<2.0 ; python_version < '3.5'
+django>=2.0 ; python_version >= '3.5'
 django-environ
-django-debug-toolbar
-django-ipware
-django-gravatar2
-django-registration
-django-jinja
-dinja2
-# python-social-auth==0.2.21
-social-auth-core
-social-auth-app-django
-django-pascal-templates
-django-localflavor
 django-formtools
-dj-database-url
-whitenoise
-django_email_queue
-django-admin-approx-count
-django-powerbank
-django-polymodels
-django-reversion
-jinja2-highlight
 django-import-export
-django-betterforms
-raven
-
-# Storages
-#django-storages
--e git+https://github.com/wooyek/django-storages@feature/gcs-no-storage-admin-support#egg=django-storages
-google-cloud
-google-cloud-storage
-
-# Assets
-django_assets
-webassets>=0.11.1
-yuicompressor
-
-# Images
-# easy-thumbnails
-# sorl-thumbnail
-# pillow
-# django-filer==1.2.6rc2 # This has old font-awesome file, watch out for overwrites
-
-# Geodjango and GIS
-# http://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal
-# This should be equal to your system GDAL
-# gdal-config --version
-# Remember to install dependencies
-# sudo apt-get install libgdal-dev
-# export CPLUS_INCLUDE_PATH=/usr/include/gdal
-# export C_INCLUDE_PATH=/usr/include/gdal
-gdal==1.11.2
-# gdal==2.1.3
-
-# Background jobs
-amqp==2.1.4
--e git+https://github.com/wooyek/celery#egg=celery
-
-# API
-djangorestframework-jsonapi
-djangorestframework
-django-filter
-agithub
--e git+https://github.com/wooyek/python-linkedin@master#egg=python_linkedin
--e git+https://github.com/wooyek/stack.py#egg=stackpy
-opencage
-
-# Local proprietary packages
---find-links=requirements
-
+django-localflavor
+django-pascal-templates
+# django-polymodels
+# django-powerbank
+# django-reversion
+# django_email_queue
+enum34 ; python_version < '3.4'
+# html2text
+# isoweek
+# jinja2-highlight
+# markdown
+# maya
+psycopg2
+pycountry
+pytz
+pathlib ; python_version < '3.3'
+# raven
+requests
+whitenoise

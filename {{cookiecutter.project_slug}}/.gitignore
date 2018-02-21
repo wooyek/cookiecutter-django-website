@@ -12,7 +12,7 @@ dist
 build
 eggs
 parts
-bin
+# bin
 var
 sdist
 develop-eggs
@@ -30,7 +30,7 @@ nosetests.xml
 htmlcov
 
 # Translations
-*.mo
+#*.mo
 
 # Mr Developer
 .mr.developer.cfg
@@ -49,6 +49,7 @@ docs/_build
 
 # User-specific stuff:
 .idea/**/workspace.xml
+*/.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
 
@@ -89,6 +90,6 @@ crashlytics-build.properties
 fabric.properties
 
 # Custom project ignores
-.pve
+.pyvenv
 .cache
 tmp

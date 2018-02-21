@@ -2,13 +2,16 @@
 Usage
 =====
 
+TODO: Modify this template in wooyek/cookiecutter-django-website for django project installation
+
+
 To use {{ cookiecutter.project_name }} in a project, add it to your `INSTALLED_APPS`:
 
 .. code-block:: python
 
     INSTALLED_APPS = (
         ...
-        '{{ cookiecutter.app_name }}.apps.{{ cookiecutter.app_config_name }}',
+        '{{ cookiecutter.package_name }}.apps.{{ cookiecutter.app_config_name }}',
         ...
     )
 
@@ -16,11 +19,11 @@ Add {{ cookiecutter.project_name }}'s URL patterns:
 
 .. code-block:: python
 
-    from {{ cookiecutter.app_name }} import urls as {{ cookiecutter.app_name }}_urls
+    from {{ cookiecutter.package_name }} import urls as {{ cookiecutter.package_name }}_urls
 
 
     urlpatterns = [
         ...
-        url(r'^', include({{ cookiecutter.app_name }}_urls)),
+        url(r'^', include({{ cookiecutter.package_name }}_urls)),
         ...
     ]

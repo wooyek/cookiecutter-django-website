@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+"""The setup script."""
+
 import os
 import re
 import sys
@@ -14,33 +17,26 @@ try:
 except ImportError:
     from distutils.core import setup
 
-{%- set license_classifiers = {
-    'Apache Software License 2.0': 'License :: OSI Approved :: Apache Software License',
-    'BSD': 'License :: OSI Approved :: BSD License',
-    'ISCL': 'License :: OSI Approved :: ISC License (ISCL)',
-    'MIT': 'License :: OSI Approved :: MIT License',
-} %}
-
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 with open('HISTORY.rst') as history_file:
     history = history_file.read().replace('.. :changelog:', '')
 
-install_requires = parse_requirements(
-    os.path.join(os.path.dirname(__file__), "requirements", "production.txt"),
-    session=uuid.uuid1()
-)
 
-test_requirements = parse_requirements(
-    os.path.join(os.path.dirname(__file__), "requirements", "test.txt"),
-    session=uuid.uuid1()
-)
+def requirements(path):
+    items = parse_requirements(path, session=uuid.uuid1())
+    return [";".join((str(r.req), str(r.markers))) if r.markers else str(r.req) for r in items]
+
+
+tests_require = requirements(os.path.join(os.path.dirname(__file__), "requirements", "testing.txt"))
+install_requires = requirements(os.path.join(os.path.dirname(__file__), "requirements", "production.txt"))
 
 
 def get_version(*file_paths):
     """Retrieves the version from path"""
     filename = os.path.join(os.path.dirname(__file__), *file_paths)
+    print("Looking for version in: {}".format(filename))
     version_file = open(filename).read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:
@@ -73,33 +69,60 @@ if sys.argv[-1] == 'tag':
     os.system("git push --tags")
     sys.exit()
 
+{%- set license_classifiers = {
+    'MIT license': 'License :: OSI Approved :: MIT License',
+    'BSD license': 'License :: OSI Approved :: BSD License',
+    'ISC license': 'License :: OSI Approved :: ISC License (ISCL)',
+    'Apache Software License 2.0': 'License :: OSI Approved :: Apache Software License',
+    'GNU General Public License v3': 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Propertiary': 'Propriety',
+} %}
+
 setup(
-    name='{{ cookiecutter.repo_name }}',
+    name='{{ cookiecutter.project_slug }}',
     version=version,
     description="""{{ cookiecutter.project_short_description }}""",
     long_description=readme + '\n\n' + history,
-    author='{{ cookiecutter.full_name }}',
+    author="{{ cookiecutter.full_name.replace('\"', '\\\"') }}",
     author_email='{{ cookiecutter.email }}',
-    url='https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.repo_name }}',
-    packages=find_packages('src'),
+    url='{{ cookiecutter.project_url }}',
+    packages=find_packages('src', exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    entry_points={
+        'console_scripts': [
+            '{{ cookiecutter.package_name }}={{ cookiecutter.package_name }}.cli:main'
+        ]
+    },
     include_package_data=True,
-    install_requires=[str(r.req) for r in install_requires] + ['Django>=1.10'],
+    exclude_package_data={
+        '': ['test*.py', 'tests/*.env', '**/tests.py'],
+    },
+    python_requires='>=2.7',
+    install_requires=install_requires,
 {%- if cookiecutter.open_source_license in license_classifiers %}
     license="{{ cookiecutter.open_source_license }}",
 {%- endif %}
     zip_safe=False,
-    keywords='{{ cookiecutter.repo_name }}',
+    keywords='{{ cookiecutter.project_slug }}',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 2 - Pre-Alpha',
         'Framework :: Django :: 1.10',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+{%- if cookiecutter.open_source_license in license_classifiers %}
+        '{{ license_classifiers[cookiecutter.open_source_license] }}',
+{%- endif %}
         'Natural Language :: English',
+        "Programming Language :: Python :: 2",
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     test_suite='runtests.run_tests',
-    tests_require=[str(r.req) for r in test_requirements],
+    tests_require=tests_require,
+    # https://docs.pytest.org/en/latest/goodpractices.html#integrating-with-setuptools-python-setup-py-test-pytest-runner
+    setup_requires=['pytest-runner'],
 )
