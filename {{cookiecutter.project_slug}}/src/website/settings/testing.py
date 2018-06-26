@@ -1,5 +1,4 @@
 # coding=utf-8
-# Copyright 2015 Brave Labs sp. z o.o.
 
 """
 These should mimic a production settings making minimal modifications to accommodate tests
@@ -7,8 +6,9 @@ These should mimic a production settings making minimal modifications to accommo
 
 import logging
 import os
-import environ
 from pathlib import Path
+
+import environ
 
 logging.basicConfig(format='%(asctime)s %(levelname)-7s %(thread)-5d %(filename)s:%(lineno)s | %(funcName)s | %(message)s', datefmt='%H:%M:%S')
 logging.getLogger().setLevel(logging.DEBUG)
@@ -17,7 +17,12 @@ logging.getLogger('environ').setLevel(logging.INFO)
 
 logging.debug("Settings loading: %s" % __file__)
 
-SETTINGS_FOLDER = Path(__file__).parent.resolve()
+name = __name__.split('.')[-1].upper()
+print("""
+╭─────────{border}──────────╮
+│ Loading {name} settings │
+╰─────────{border}──────────╯
+""".format(name=name, border='─' * len(name)))
 
 # Set defaults for when env file is not present.
 # These need to be entered into an environment,
@@ -26,25 +31,26 @@ SETTINGS_FOLDER = Path(__file__).parent.resolve()
 os.environ.update(
     DEBUG='False',
     ASSETS_DEBUG='False',
-    GOOGLE_APPLICATION_CREDENTIALS=str(SETTINGS_FOLDER / "Testing Your-HR-0a3f150f7ca0.json"),
 )
 
 # This will read missing environment variables from a file
 # We want to do this before loading any base settings as they may depend on environment
-environ.Env.read_env(str(SETTINGS_FOLDER / "testing.env"))
+environment_config = Path(__file__).with_suffix('.env')
+if environment_config.exists():
+    environ.Env.read_env(str(environment_config))
 
 # noinspection PyUnresolvedReferences
-from .base import *
+from .base import *  # noqa: F402, F403, F401 isort:skip
 
+# https://docs.djangoproject.com/en/dev/topics/email/#console-backend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-LOGGING['handlers']['mail_admins']['email_backend'] = 'django.core.mail.backends.dummy.EmailBackend'
+LOGGING['handlers']['mail_admins']['email_backend'] = 'django.core.mail.backends.dummy.EmailBackend'  # noqa: F405
 
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 # The name of the class to use to run the test suite
-TEST_RUNNER = 'misc.testing.KeepDbTestRunner'
+TEST_RUNNER = 'website.misc.testing.KeepDbTestRunner'
 
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 TASKER_ALWAYS_EAGER = True
-

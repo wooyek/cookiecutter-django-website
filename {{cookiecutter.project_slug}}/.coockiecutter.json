@@ -1,6 +1,5 @@
 {
   "cookiecutter": {
-    "include_sphinx_doc": "{{ cookiecutter.include_sphinx_doc }}",
     "project_slug": "{{ cookiecutter.project_slug }}",
     "project_url": "{{ cookiecutter.project_url }}",
     "app_config_name": "{{ cookiecutter.app_config_name }}",
@@ -15,13 +14,11 @@
     "full_name": "{{ cookiecutter.full_name }}",
     "use_read_the_docs": "{{ cookiecutter.use_read_the_docs }}",
     "repo_domain": "{{ cookiecutter.repo_domain }}",
-    "create_example_project": "{{ cookiecutter.create_example_project }}",
     "repo_username": "{{ cookiecutter.repo_username }}",
     "project_short_description": "{{ cookiecutter.project_short_description }}",
     "email": "{{ cookiecutter.email }}",
     "create_virtual_environment": "{{ cookiecutter.create_virtual_environment }}",
     "version": "{{ cookiecutter.version }}",
-    "create_author_file": "{{ cookiecutter.create_author_file }}",
     "git_init": "{{ cookiecutter.git_init }}",
     "repo_url": "{{ cookiecutter.repo_url }}"
   }

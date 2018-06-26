@@ -6,10 +6,11 @@
 # PROPRIETY TRADE SECRETS of Brave Labs sp. z o.o.
 # Use is subject to license terms. See NOTICE file of this project for details.
 
-from rest_framework import routers
+import logging
 
-# from status import api as status
+from . import core
 
-router = routers.DefaultRouter()
-# router.register(r'categories', status.CategoryViewSet, 'Category')
+log = logging.getLogger(__name__)
 
+INTERCOM_APP_ID = core.env("INTERCOM_APP_ID")
+INTERCOM_APP_SECRET = bytearray(core.env("INTERCOM_APP_SECRET"), 'ascii')

@@ -1,11 +1,19 @@
 # coding=utf-8
+# Copyright 2015 Brave Labs sp. z o.o.
+# All rights reserved.
+#
+# This source code and all resulting intermediate files are CONFIDENTIAL and
+# PROPRIETY TRADE SECRETS of Brave Labs sp. z o.o.
+# Use is subject to license terms. See NOTICE file of this project for details.
+
+import logging
+
 import factory
 import faker
 from django.contrib.auth import get_user_model
 
-from . import models
-
 fake = faker.Faker()
+log = logging.getLogger(__name__)
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -18,10 +26,3 @@ class UserFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = get_user_model()
-
-
-class NamedModelFactory(factory.DjangoModelFactory):
-    name = factory.Faker('name')
-
-    class Meta:
-        model = models.NamedModel

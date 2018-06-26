@@ -69,7 +69,7 @@ def test_readme(cookies):
 
 
 def test_models(cookies):
-    extra_context = {'models': 'ChocolateChip,Zimsterne', 'app_name': 'cookies'}
+    extra_context = {'models': 'ChocolateChip,Zimsterne', 'package_name': 'cookies'}
     with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
 
         model_file = result.project.join('cookies', 'models.py')
@@ -82,7 +82,7 @@ def test_views_with_models(cookies):
     """
     Test case to assert if the views are created when the models are passed
     """
-    extra_context = {'models': 'Pug,Dog', 'app_name': 'cookies'}
+    extra_context = {'models': 'Pug,Dog', 'package_name': 'cookies'}
     with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         views_file = result.project.join('cookies', 'views.py')
         views_file_txt = views_file.read()
@@ -97,7 +97,7 @@ def test_views_without_models(cookies):
     """
     Test case to assert that the views.py file is empty when there are no models defined
     """
-    extra_context = {'app_name': 'cookies'}
+    extra_context = {'package_name': 'cookies'}
     with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         views_file = result.project.join('cookies', 'views.py')
         views_file_txt = views_file.read()
@@ -108,7 +108,7 @@ def test_urls_regex_with_model(cookies):
     """
     Test case to assert that the urls.py file is created when models are passed
     """
-    extra_context = {'models': 'Pug,Dog', 'app_name': 'cookies'}
+    extra_context = {'models': 'Pug,Dog', 'package_name': 'cookies'}
     with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         urls_file = result.project.join('cookies', 'urls.py')
         urls_file_txt = urls_file.read()
@@ -166,7 +166,7 @@ def test_authors(cookies):
         assert 'Cookie McCookieface' in authors_text
 
 def test_manifest(cookies):
-    extra_context = {'app_name': 'cookie_lover'}
+    extra_context = {'package_name': 'cookie_lover'}
     with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
 
         manifest_file = result.project.join('MANIFEST.in')
@@ -248,7 +248,7 @@ def test_new_django_versions(cookies):
 
 def test_flake8_compliance(cookies):
     """generated project should pass flake8"""
-    extra_context = dict(QUICK_CONTEXT, create_example_project='Y')
+    extra_context = dict(QUICK_CONTEXT, )
     with bake_in_temp_dir(cookies, extra_context=extra_context) as result:
         for file_obj in result.project.listdir():
             name = os.path.join(

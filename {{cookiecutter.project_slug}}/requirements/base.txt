@@ -1,4 +1,4 @@
-# {{ cookiecutter.project_name }} dependencies 
+# Base dependencies 
 # Django maybe missing here if multiple verssions are to be tested and installed by tox
 # For development we keep them unfreezed to work and test on newest versions as soon as they are released
 # Freezing can be perforemd by pip-compile or pipenv
@@ -7,12 +7,13 @@ click
 django<2.0 ; python_version < '3.5'
 django>=2.0 ; python_version >= '3.5'
 django-environ
+django-error-views
 django-formtools
 django-import-export
-django-localflavor
+#django-localflavor
 django-pascal-templates
 # django-polymodels
-# django-powerbank
+django-powerbank
 # django-reversion
 # django_email_queue
 enum34 ; python_version < '3.4'
@@ -21,7 +22,7 @@ enum34 ; python_version < '3.4'
 # jinja2-highlight
 # markdown
 # maya
-psycopg2
+psycopg2-binary
 pycountry
 pytz
 pathlib ; python_version < '3.3'

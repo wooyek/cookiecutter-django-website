@@ -24,7 +24,6 @@ BANNER = """
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 PROJECT_SLUG = "{{ cookiecutter.project_slug }}"
 CREATE_VIRTUAL_ENVIRONMENT = '{{ cookiecutter.create_virtual_environment }}'.lower() == 'y'
-CREATE_EXAMPLE_PROJECT = '{{ cookiecutter.create_example_project }}'.lower() == 'y'
 REPO_URL = "{{ cookiecutter.repo_url }}"
 INCLUDE_SPHINX_DOC = '{{ cookiecutter.include_sphinx_doc }}' != 'y'
 GIT_INIT = '{{ cookiecutter.git_init }}'.lower() == 'y'
@@ -104,10 +103,6 @@ if __name__ == '__main__':
 
     if INCLUDE_SPHINX_DOC:
         shutil.rmtree(os.path.join(PROJECT_DIRECTORY, 'docs'))
-
-    if not CREATE_EXAMPLE_PROJECT:
-        location = os.path.join(PROJECT_DIRECTORY, 'example_project')
-        shutil.rmtree(location)
 
     if CREATE_VIRTUAL_ENVIRONMENT and VEX_AVAILABLE and PIPENV_AVAILABLE:
         call(["vex", PROJECT_SLUG, 'pipenv', 'install', '-r', 'requirements/production.txt'])

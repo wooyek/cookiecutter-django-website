@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `{{ cookiecutter.project_slug }}` package."""
+"""Tests for `{{ cookiecutter.package_name }}` package."""
 
 from click.testing import CliRunner
 
-import {{ cookiecutter.package_name }}
 from {{ cookiecutter.package_name }} import cli
-
-{{ cookiecutter.package_name }}.__version__
 
 
 def test_command_line_interface():

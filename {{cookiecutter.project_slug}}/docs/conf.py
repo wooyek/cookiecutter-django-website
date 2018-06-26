@@ -36,7 +36,7 @@ sys.path.insert(0, os.path.join(project_root, 'src'))
 def setup_django():
     import django
     from django.conf import settings
-    from tests.settings import INSTALLED_APPS
+    from website.settings.development import INSTALLED_APPS
     settings.configure(INSTALLED_APPS=INSTALLED_APPS)
     django.setup()
 
@@ -54,7 +54,7 @@ linkcheck_ignore = [
     r'https://saythanks.io/to/.+',
     r'https://{{ cookiecutter.project_slug }}.readthedocs.io.*',
     r'https://codeclimate.com/github/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
-    r'https://github.com/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
+    r'{{ cookiecutter.project_url }}.*',
     r'https://codecov.io/gh/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
     r'https://coveralls.io/github/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
     r'https://pypi.python.org/pypi/{{ cookiecutter.project_slug }}',

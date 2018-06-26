@@ -3,11 +3,19 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import resolve_url
 from django.test import TestCase
-from django_powerbank.testing import MigrationsCheck
+from django_powerbank.testing.base import MigrationsCheckMx
+
+from website.misc import factories
 
 
-class MigrationsCheckTests(MigrationsCheck):
+class MigrationsCheckTests(MigrationsCheckMx, TestCase):
     pass
+
+
+class UserTests(TestCase):
+    def test_user_factory(self):
+        user = factories.UserFactory()
+        self.assertIsNotNone(user)
 
 
 class TestAdminAvailable(TestCase):

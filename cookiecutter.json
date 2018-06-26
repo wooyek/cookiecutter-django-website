@@ -6,7 +6,8 @@
   "project_short_description": "Your project description goes here",
   "repo_domain": [
     "github.com",
-    "bitbucket.org"
+    "bitbucket.org",
+    "gitlab.com"
   ],
   "repo_username": "Used to initialize GIT repo origin remote",
   "repo_url": "git@{{ cookiecutter.repo_domain }}:{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}.git",

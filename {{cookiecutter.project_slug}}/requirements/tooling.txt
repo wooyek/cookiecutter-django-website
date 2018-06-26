@@ -7,9 +7,12 @@ codecov
 coverage
 detox
 flake8
+invoke
 isort
 pygments
 readme-renderer
 setuptools
 tox
 wheel
+pyyaml
+yuicompressor

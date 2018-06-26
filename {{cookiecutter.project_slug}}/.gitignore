@@ -92,4 +92,7 @@ fabric.properties
 # Custom project ignores
 .pyvenv
 .cache
-tmp
+.pytest_cache
+logs/*.log
+src/website/settings/production.env
+data/db.dev.sqlite3

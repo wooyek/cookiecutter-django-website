@@ -3,6 +3,7 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
+include newrelic.ini
 
 include *.py
 include *.yml
@@ -47,7 +48,34 @@ recursive-include src *.pot
 recursive-include bin * *.*
 recursive-include tests *.env
 recursive-include tests *.py
+recursive-include data *.md
+recursive-include data *.sqlite3
+recursive-include fixtures *.json
+recursive-include locale *.cfg
+recursive-include locale *.po
+recursive-include logs *.md
+recursive-include src *.txt
+recursive-include static *.* *
+recursive-include templates *.html
+recursive-include assets *.md
+recursive-include styles *.md
+recursive-include vendor *.md
+recursive-include assets *.css
+recursive-include assets *.eot
+recursive-include assets *.js
+recursive-include assets *.json
+recursive-include assets *.map
+recursive-include assets *.otf
+recursive-include assets *.png
+recursive-include assets *.svg
+recursive-include assets *.ttf
+recursive-include assets *.woff
+recursive-include assets *.woff2
+recursive-include fixtures *.csv
+recursive-include fixtures *.yaml
 
+exclude assets/compressed/.webassets-cache
+recursive-exclude assets/compressed/.webassets-cache *
 
 exclude example_project/.idea/workspace.xml
 recursive-include example_project *.html
@@ -61,3 +89,6 @@ recursive-include example_project *.iml
 recursive-include example_project *.xml
 recursive-include example_project *.po
 recursive-include example_project *.cfg
+
+exclude src/website/settings/production.env
+exclude data/db.dev.sqlite3

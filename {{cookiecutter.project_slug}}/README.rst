@@ -72,49 +72,43 @@ To run an example project for this django reusable app, click the button below a
 Quickstart
 ----------
 
-Install {{ cookiecutter.project_name }}::
+1. Fork the `{{ cookiecutter.project_slug }}` repo on bitbucket.org
+2. Clone your fork locally::
 
-    pip install {{ cookiecutter.project_slug }}
+    $ git clone {{ cookiecutter.repo_url }}
 
-Add it to your `INSTALLED_APPS`:
+3. Setup your development env::
 
-.. code-block:: python
+    $ pipsi install pew
+    $ cd {{ cookiecutter.project_slug }}/
+    $ pew new -p python3 -a $(pwd) $(pwd | xargs basename)
+    $ pew workon {{ cookiecutter.project_slug }}
+    $ pip install -r requirements/development.txt
 
-    INSTALLED_APPS = (
-        ...
-        '{{ cookiecutter.package_name }}.apps.{{ cookiecutter.app_config_name }}',
-        ...
-    )
+4. Test project health::
 
-Add {{ cookiecutter.project_name }}'s URL patterns:
-
-.. code-block:: python
-
-    from {{ cookiecutter.package_name }} import urls as {{ cookiecutter.package_name }}_urls
-
-
-    urlpatterns = [
-        ...
-        url(r'^', include({{ cookiecutter.package_name }}_urls)),
-        ...
-    ]
-
-
-Running Tests
--------------
-
-Does the code actually work?
-
-::
-
-    $ pipenv install --dev
-    $ pipenv shell
+    $ python manage.py check
+    $ pytest
+    $ inv lint
     $ tox
 
+5. Initialize development database and fill it with test data::
 
-We recommend using pipenv_ but a legacy approach to creating virtualenv and installing requirements should also work.
-Please install `requirements/development.txt` to setup virtual env for testing and development.
+    $ inv db
 
+6. Create a branch for local development and start development server::
+
+    $ git checkout -b name-of-your-bugfix-or-feature
+    $ python manage.py runserver
+
+
+Deployment
+----------
+
+Add a development remote and deploy::
+
+    $ git remote add dev https://git.heroku.com/{{ cookiecutter.project_slug }}-dev.git
+    $ inv deploy
 
 Credits
 -------
@@ -123,4 +117,4 @@ This package was created with Cookiecutter_ and the `wooyek/cookiecutter-django-
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`wooyek/cookiecutter-django-app`: https://github.com/wooyek/cookiecutter-django-app
-.. _`pipenv`: https://docs.pipenv.org/install#fancy-installation-of-pipenv
+.. _`pipenv`: https://docs.pipenv.org/install

@@ -10,15 +10,10 @@
 # pipenv has issues with such installation, we will have to perform it manually
 # https://github.com/kennethreitz/pipenv/issues/540
 -e .
-{% if cookiecutter.create_example_project == 'y' -%}
--e example_project
-{%- endif %}
 
 # Tooling
 -r tooling.txt
 
-{% if cookiecutter.include_sphinx_doc == 'y' -%}
 # Documentation
 -r ../docs/requirements.txt
-{% endif %}
 

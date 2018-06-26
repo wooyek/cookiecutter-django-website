@@ -5,9 +5,9 @@
 # This source code and all resulting intermediate files are CONFIDENTIAL and
 # PROPRIETY TRADE SECRETS of Brave Labs sp. z o.o.
 # Use is subject to license terms. See NOTICE file of this project for details.
-from celery import shared_task
+# from celery import shared_task
 from django.contrib import messages
-from django.views.debug import SafeExceptionReporterFilter, CLEANSED_SUBSTITUTE
+from django.views.debug import CLEANSED_SUBSTITUTE, SafeExceptionReporterFilter
 from django.views.generic import View
 
 
@@ -21,9 +21,9 @@ def django_tasker_err():
     raise Exception(u"Django tasker async task error ążśźęćńół")
 
 
-@shared_task(bind=True, max_retries=0, queue="counters", trail=False)
-def celery_err(self):
-    raise Exception(u"Celery async task error ążśźęćńół")
+# @shared_task(bind=True, max_retries=0, queue="counters", trail=False)
+# def celery_err(self):
+#     raise Exception(u"Celery async task error ążśźęćńół")
 
 
 class ErrView(View):
@@ -31,7 +31,7 @@ class ErrView(View):
 
     def get(self, request):
         messages.warning(request, u"Error was tested ążźśęćńół")
-        celery_err.delay()
+        # celery_err.delay()
         # django_tasker_err.queue()
         raise Exception(u"Błąd ążśźęćńół")
 
@@ -48,7 +48,7 @@ class SaferExceptionReporterFilter(SafeExceptionReporterFilter):
         sensitive_variables = None
         while current_frame is not None:
             if (current_frame.f_code.co_name == 'sensitive_variables_wrapper' and
-                        'sensitive_variables_wrapper' in current_frame.f_locals):
+                    'sensitive_variables_wrapper' in current_frame.f_locals):
                 # The sensitive_variables decorator was used, so we take note
                 # of the sensitive variables' names.
                 wrapper = current_frame.f_locals['sensitive_variables_wrapper']
@@ -77,7 +77,7 @@ class SaferExceptionReporterFilter(SafeExceptionReporterFilter):
                 cleansed[name] = self.cleanse_special_types(request, value)
 
         if (tb_frame.f_code.co_name == 'sensitive_variables_wrapper' and
-                    'sensitive_variables_wrapper' in tb_frame.f_locals):
+                'sensitive_variables_wrapper' in tb_frame.f_locals):
             # For good measure, obfuscate the decorated function's arguments in
             # the sensitive_variables decorator's frame, in case the variables
             # associated with those arguments were meant to be obfuscated from
@@ -86,4 +86,3 @@ class SaferExceptionReporterFilter(SafeExceptionReporterFilter):
             cleansed['func_kwargs'] = CLEANSED_SUBSTITUTE
 
         return cleansed.items()
-

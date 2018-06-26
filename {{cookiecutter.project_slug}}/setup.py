@@ -107,7 +107,7 @@ setup(
     keywords='{{ cookiecutter.project_slug }}',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        'Framework :: Django :: 1.10',
+        # 'Framework :: Django :: 1.10',
         'Intended Audience :: Developers',
 {%- if cookiecutter.open_source_license in license_classifiers %}
         '{{ license_classifiers[cookiecutter.open_source_license] }}',

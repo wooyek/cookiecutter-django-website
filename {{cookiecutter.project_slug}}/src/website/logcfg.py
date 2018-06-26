@@ -1,8 +1,5 @@
 # coding=utf-8
 # Created 2014 by Janusz Skonieczny
-import logging
-import traceback
-from pathlib import Path
 
 
 def trace_disabled_loggers():  # pragma: no cover
