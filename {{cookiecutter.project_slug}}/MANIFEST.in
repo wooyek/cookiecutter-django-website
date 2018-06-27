@@ -6,6 +6,7 @@ include README.rst
 include newrelic.ini
 
 include *.py
+include *.rst
 include *.yml
 include *.in
 include *.txt
@@ -31,6 +32,7 @@ recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs *.txt
 recursive-include docs Makefile
+recursive-include data *.md
 recursive-include docs *.css
 recursive-exclude docs/_build *
 recursive-include docs/_static *.png
