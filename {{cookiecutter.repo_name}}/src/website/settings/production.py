@@ -26,7 +26,9 @@ os.environ.update(DEBUG='False', ASSETS_DEBUG='False')
 
 # This will read missing environment variables from a file
 # We want to do this before loading any base settings as they may depend on environment
-environ.Env.read_env(str(Path(__file__).parent / "production.env"))
+evironment_config = Path(__file__).parent / "production.env"
+if evironment_config.exists():
+    environ.Env.read_env(str(evironment_config))
 
 # noinspection PyUnresolvedReferences
 from .base import *

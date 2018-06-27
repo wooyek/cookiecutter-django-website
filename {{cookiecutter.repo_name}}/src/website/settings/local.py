@@ -1,5 +1,5 @@
 # coding=utf-8
-# Created 2014 by Janusz Skonieczny
+# Based on https://github.com/wooyek/cookiecutter-django-website by Janusz Skonieczny
 
 import logging
 import environ
