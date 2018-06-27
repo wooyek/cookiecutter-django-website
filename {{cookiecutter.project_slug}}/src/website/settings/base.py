@@ -31,7 +31,7 @@ logging.debug("Settings loading: %s" % __file__)
 
 # noinspection PyUnresolvedReferences
 from .components.debug_toolbar import *  # noqa: F402 F403 isort:skip
-from .components.django_assets import * # noqa: F402 F402
+from .components.django_assets import *  # noqa: F402 F403 isort:skip
 # from .components.celery import * # noqa: F402
 # from .components.oauth_toolkit import * # noqa: F402
 # from .components.rest_framework import *  # noqa: F402
@@ -57,7 +57,7 @@ INSTALLED_APPS += (  # noqa: F405
     # 'localflavor',
     # 'django_gravatar',
     # 'misc.choose_language',
-    '{{ cookiecutter.package_name }}.apps.PelikanConfig',
+    '{{ cookiecutter.package_name }}.apps.{{ cookiecutter.app_config_name }}',
 )
 
 LANGUAGE_CODE = 'pl'

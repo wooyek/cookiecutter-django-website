@@ -8,7 +8,7 @@ from . import models, resources
 @admin.register(models.SampleModel)
 class SampleModelAdmin(ImportExportMixin, admin.ModelAdmin):
     resource_class = resources.SampleModelResource
-    list_display = ('foo', )
-    list_filter = ('foo', )
-    readonly_fields = ('foo', )
+    list_display = ('name', )
+    list_filter = ('name', )
+    readonly_fields = ('name', )
     # date_hierarchy = 'ts'

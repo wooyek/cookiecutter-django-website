@@ -15,14 +15,14 @@ JS = (
     "assets/js/main.js",
 )
 
-import sys
+import sys  # noqa: E402 isort:skip
 
 if sys.platform == 'win32':
     JS = [normcase(f) for f in JS]
     # IE_JS = [normcase(f) for f in IE_JS]
     CSS = [normcase(f) for f in CSS]
 
-from django_assets import Bundle, register
+from django_assets import Bundle, register  # noqa: E402 isort:skip
 
 register('js', Bundle(*JS, filters='yui_js', output='script.%(version)s.js'))
 register('css', Bundle(*CSS, filters='yui_css', output='style.%(version)s.css'))

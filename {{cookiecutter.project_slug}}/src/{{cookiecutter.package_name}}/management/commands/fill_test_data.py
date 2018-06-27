@@ -20,7 +20,7 @@ class Command(BaseCommand):
         if not self.accept_state(**options):
             return
         logging.info("Faking test data: %s", count)
-        from {{cookiecutter.package_name}}. import factories
+        from {{cookiecutter.package_name}} import factories
         items = factories.SampleModelFactory.create_batch(int(count))
         log.info("Created: %s", items)
 

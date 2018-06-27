@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}),
     url(r'^accounts/', include('django.contrib.auth.urls')),
-    url(r'^', include('{{coockiecutter.package_name}}.urls')),
+    url(r'^', include('{{ cookiecutter.package_name }}.urls')),
 ]
 
 if 'debug_toolbar' in settings.INSTALLED_APPS:
