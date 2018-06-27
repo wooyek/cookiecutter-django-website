@@ -1,14 +1,40 @@
 {
-  "full_name": "Janusz Skonieczny",
-  "email": "janusz@example.com",
-  "github_username": "wooyek",
   "project_name": "Django Website Project",
-  "repo_name": "{{ cookiecutter.project_name.lower()|replace(' ', '-') }}",
-  "app_name": "{{ cookiecutter.repo_name.lower()|replace(' ', '_')|replace('-', '_') }}",
-  "app_config_name": "{{ cookiecutter.app_name.replace('_', ' ')|title()|replace(' ', '') }}Config",
-  "project_short_description": "Your website project description goes here",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
+  "package_name": "{{ cookiecutter.project_slug.lower()|replace('-', '_') }}",
+  "app_config_name": "{{ cookiecutter.package_name.replace('_', ' ')|title()|replace(' ', '') }}Config",
+  "project_short_description": "Your project description goes here",
+  "repo_domain": [
+    "github.com",
+    "bitbucket.org",
+    "gitlab.com"
+  ],
+  "repo_username": "Used to initialize GIT repo origin remote",
+  "repo_url": "git@{{ cookiecutter.repo_domain }}:{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}.git",
+  "project_url": "https://{{ cookiecutter.repo_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}",
+  "full_name": "Your full name",
+  "email": "Your email used for package publication",
   "version": "0.1.0",
-  "open_source_license": ["MIT", "BSD", "ISCL", "Apache Software License 2.0", "Not open source"],
-  "create_virtual_environment": "Y",
-  "git_init": "Y"
+  "open_source_license": [
+    "MIT license",
+    "BSD license",
+    "ISC license",
+    "Apache Software License 2.0",
+    "GNU General Public License v3",
+    "GNU Affero General Public License v3",
+    "Propertiary"
+  ],
+  "copyright": "{{ cookiecutter.full_name }}",
+  "pypi_username": "{{ cookiecutter.repo_username }}",
+  "use_travis_ci": "y",
+  "use_read_the_docs": "y",
+  "sphinx_theme": [
+    "sphinx-rtd-theme",
+    "sphinx-py3doc-enhanced-theme",
+    "alabaster"
+  ],
+  "include_sphinx_doc": "{{ cookiecutter.use_read_the_docs }}",
+  "create_virtual_environment": "y",
+  "git_init": "y",
+  "run_tests_on_init": "y"
 }

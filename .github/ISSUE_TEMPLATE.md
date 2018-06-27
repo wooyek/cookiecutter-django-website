@@ -1,6 +1,6 @@
-* Version of cookiecutter-django-app or date:
-* Cookiecutter version used, if known:
-* Python version:
+* Version of cookiecutter-django-website or date:
+* Cookiecutter version used, if any:
+* Python version, if any:
 * Operating System:
 
 ### Description
