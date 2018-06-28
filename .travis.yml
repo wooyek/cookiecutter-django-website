@@ -16,7 +16,7 @@ before_install:
   - python --version
   - uname -a
   - lsb_release -a
-  - sudo apt-get install -y git-flow python-enchant
+  - sudo apt-get install -y git-flow python-enchant gdal-bin
 
 install:
   - pip install -U tox detox setuptools pip cookiecutter tox-travis vex pew pipenv
@@ -47,7 +47,7 @@ jobs:
           - cookiecutter --no-input .
           - cd $PACKAGE_NAME
           - which python
-          # - ls -la .pyvenv/bin/
+          # - ls -la .pyvenv/bin/3
           - ls -la $VIRTUAL_ENV/bin
           - tox --version
           - pwd
