@@ -105,6 +105,9 @@ setup(
     },
     python_requires='>=2.7',
     install_requires=install_requires,
+    dependency_links=[
+        'file:///' + os.path.dirname(__file__) + '/requirements/local',
+    ],
 {%- if cookiecutter.open_source_license in license_classifiers %}
     license="{{ cookiecutter.open_source_license }}",
 {%- endif %}
