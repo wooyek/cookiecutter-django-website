@@ -96,3 +96,5 @@ fabric.properties
 logs/*.log
 src/website/settings/production.env
 data/db.dev.sqlite3
+node_modules
+secrets.env
