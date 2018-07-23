@@ -1,17 +1,75 @@
 language: python
+sudo: false
 
-python: 3.5
-env:
-  - TOXENV=py27
-  - TOXENV=py33
-  - TOXENV=py34
-  - TOXENV=py35
+python:
+  - "3.5"
+  - "3.6"
+  - "2.7"
+
+matrix:
+    fast_finish: true
+    allow_failures:
+      - python: "2.7"
+
+
+before_install:
+  - python --version
+  - uname -a
+  - lsb_release -a
+  - sudo apt-get install -y git-flow python-enchant gdal-bin
 
 install:
-  - pip install -U tox
+  - pip install -U tox detox setuptools pip cookiecutter tox-travis vex pew pipenv
+  - pip install "backports.shutil_which ; python_version < '3.4'"
+  - virtualenv --version
+  - easy_install --version
+  - pip --version
+  - tox --version
+  - git --version
+  - python3 -m venv -h
+  - env
+  # Wee need to create a virtualenvs folder to fool PEW that is not a new environment
+  # https://github.com/berdario/pew/blob/cd4ecd6775340ad9dbec37e10b4b3618dc36b49c/pew/pew.py#L59
+  - export WORKON_HOME=~/.local/share/virtualenvs
+  - export PACKAGE_NAME=django-reusable-app
+  - mkdir -p $WORKON_HOME
 
 script:
-  - tox
+  # If test fail with vague messages, uncomment this and see generation log
+  - cookiecutter --no-input .
+  - tox -v
+
+jobs:
+  include:
+    - stage: make
+      script:
+          - env
+          - cookiecutter --no-input .
+          - cd $PACKAGE_NAME
+          - which python
+          # - ls -la .pyvenv/bin/3
+          - ls -la $VIRTUAL_ENV/bin
+          - tox --version
+          - pwd
+          - ls -la
+          - make
+          - vex $PACKAGE_NAME make bump
+          - vex $PACKAGE_NAME make lint
+          - vex $PACKAGE_NAME make test
+          - make tox
+          - make detox
+          - vex $PACKAGE_NAME make coverage
+          - make dist
+          - make install
+          - vex $PACKAGE_NAME make docs
+          # Lint again after docs generation
+          - vex $PACKAGE_NAME make lint
+          - make clean
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
