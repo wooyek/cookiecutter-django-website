@@ -19,8 +19,8 @@
         :target: https://{{ cookiecutter.project_slug | replace("_", "-") }}.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 {%- endif %}
-.. image:: https://coveralls.io/repos/github/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}/badge.svg?branch=develop
-        :target: https://coveralls.io/github/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}?branch=develop
+.. image:: https://coveralls.io/repos/{{ cookiecutter.repo_domain[:-4] }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}/badge.svg?branch=develop
+        :target: https://coveralls.io/{{ cookiecutter.repo_domain[:-4] }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}?branch=develop
         :alt: Coveralls.io coverage
 
 .. image:: https://codecov.io/gh/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}/branch/develop/graph/badge.svg
@@ -28,14 +28,14 @@
         :alt: CodeCov coverage
 
 .. image:: https://api.codeclimate.com/v1/badges/0e7992f6259bc7fd1a1a/maintainability
-        :target: https://codeclimate.com/github/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}/maintainability
+        :target: https://codeclimate.com/{{ cookiecutter.repo_domain[:-4] }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}/maintainability
         :alt: Maintainability
 
-.. image:: https://img.shields.io/github/license/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}.svg
-        :target: https://github.com/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}/blob/develop/LICENSE
+.. image:: https://img.shields.io/{{ cookiecutter.repo_domain[:-4] }}/license/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}.svg
+        :target: https://{{ cookiecutter.repo_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}/blob/develop/LICENSE
         :alt: License
 
-.. image:: https://img.shields.io/twitter/url/https/github.com/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}.svg?style=social
+.. image:: https://img.shields.io/twitter/url/https/{{ cookiecutter.repo_domain }}/{{ cookiecutter.repo_username }}/{{ cookiecutter.project_slug }}.svg?style=social
         :target: https://twitter.com/intent/tweet?text=Wow:&url={{ cookiecutter.project_url }}
         :alt: Tweet about this project
 

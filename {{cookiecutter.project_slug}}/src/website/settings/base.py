@@ -17,6 +17,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import logging
+import os
 from pathlib import Path
 
 logging.basicConfig(format='%(asctime)s %(levelname)-7s %(thread)-5d %(filename)s:%(lineno)s | %(funcName)s | %(message)s', datefmt='%H:%M:%S')
@@ -40,11 +41,15 @@ from .components.sentry import *  # noqa: F402 F403 isort:skip
 from .components.newrelic import *  # noqa: F402 F403 isort:skip
 # from .components.django_opt_out import *  # noqa: F402 F403 isort:skip
 # from .components.django_email_queue import *  # noqa: F402 F403 isort:skip
+# from .components.django_filer import *  # noqa: F402 F403 isort:skip
 # from .components.oauth_toolkit import * # noqa: F402 F403 isort:skip
 # from .components.rest_framework import *  # noqa: F402 F403 isort:skip
 # from .components.gis import *  # noqa: F402 F403 isort:skip
 # from .components.intercom import *  # noqa: F402 F403 isort:skip
 from .components.pure_pagination import *  # noqa: F402 F403 isort:skip
+
+if 'GOOGLE_STORAGE_ID' in os.environ:
+    from .components.google_cloud_storage import *  # noqa: F402 F403 isort:skip
 
 # Other imports can cause change in core settings
 # we should import core last
@@ -79,7 +84,7 @@ import django_error_views  # noqa F402 isort:skip
 
 LOCALE_PATHS = [
     str(Path(django_error_views.__file__).parent / 'locales'),
-    # str(BASE_DIR / 'locales'),
+    str(BASE_DIR / 'locales'),
 ]
 
 

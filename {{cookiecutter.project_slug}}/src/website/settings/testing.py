@@ -43,8 +43,8 @@ if environment_config.exists():
 if 'DATABASE_URL' not in os.environ:
     # This a default fallback for local development and testing
     BASE_DIR = Path(__file__).parents[3]
-    os.environ['DATABASE_URL'] = 'sqlite:///' + str(BASE_DIR / 'data' / 'db.dev.sqlite3')
-    os.environ['DATABASE_TEST_NAME'] = 'sqlite:///' + str(BASE_DIR / 'data' / 'db.tests.sqlite3')
+    os.environ['DATABASE_URL'] = 'sqlite://' + str(BASE_DIR / 'data' / 'db.dev.sqlite3')
+    os.environ['DATABASE_TEST_NAME'] = 'db.tests.sqlite3'
 
 # noinspection PyUnresolvedReferences
 from .base import *  # noqa: F402, F403, F401 isort:skip

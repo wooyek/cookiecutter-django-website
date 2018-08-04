@@ -53,10 +53,10 @@ modindex_common_prefix = ['{{ cookiecutter.package_name }}.']
 linkcheck_ignore = [
     r'https://saythanks.io/to/.+',
     r'https://{{ cookiecutter.project_slug }}.readthedocs.io.*',
-    r'https://codeclimate.com/github/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
+    r'https://codeclimate.com/{{ cookiecutter.repo_domain[:-4] }}/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
     r'{{ cookiecutter.project_url }}.*',
     r'https://codecov.io/gh/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
-    r'https://coveralls.io/github/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
+    r'https://coveralls.io/{{ cookiecutter.repo_domain[:-4] }}/{{ cookiecutter.repo_username|replace(' ', '') }}/{{ cookiecutter.project_slug }}.*',
     r'https://pypi.python.org/pypi/{{ cookiecutter.project_slug }}',
 ]
 
