@@ -132,21 +132,22 @@ sync: ## Sync master and develop branches in both directions
 bump: ## increment version number
 	bump2version patch
 
-upgrade: ## upgrade frozen requirements to the latest version
-	pip-compile requirements.in -o requirements.txt
-	sort requirements.txt -o requirements.txt
-	git add requirements.txt
-	git commit -m "Requirements upgrade"
+pip-compile: ## upgrade frozen requirements to the latest version
+	pip-compile requirements/production.txt -o requirements/lock/production.txt
+	sort requirements/lock/production.txt -o requirements/lock/production.txt
+	git add requirements/lock/*.txt
+	git commit -m "Requirements compiled by pip-compile"
 
-upgrade2: ## upgrade frozen requirements to the latest version
+pipenv: ## upgrade frozen requirements to the latest version
 	pipenv install -r requirements/production.txt
 	pipenv install --dev -r requirements/development.txt
 	pipenv lock --requirements > requirements/lock/production.txt
 	pipenv lock --requirements --dev | grep -v '/{{cookiecutter.package_name}}' -- > requirements/lock/development.txt
+	pipenv graph --reverse -- > requirements/lock/graph.txt
 	sort requirements/lock/production.txt -o requirements/lock/production.txt
 	sort requirements/lock/development.txt -o requirements/lock/development.txt
 	git add Pipfile Pipfile.lock requirements/lock/*.txt
-	git commit -m "Requirements upgrade"
+	git commit -m "Requirements locked by pipenv"
 
 release: lint upgrade detox sync bump dist ## build new package version release and sync repo
 	git checkout develop
