@@ -1,10 +1,10 @@
 {
-  "name": "Picropper",
-  "description": "Web application to prepare images in predefined sizes",
-  "version": "0.1.0",
-  "license": "Proprietary",
+  "name": "{{ cookiecutter.project_name }}",
+  "description": "{{ cookiecutter.project_short_description }}",
+  "version": "{{ cookiecutter.version }}",
+  "license": "{{ cookiecutter.open_source_license }}",
   "private": true,
-  "author": "Janusz Skonieczny",
+  "author": "{{ cookiecutter.copyright }}",
   "repository": "https://github.com/wooyek/picropper",
   "devDependencies": {
     "gulp": "^3.9.1",
