@@ -1,4 +1,4 @@
-web: gunicorn --chdir=/app/src website.wsgi:application --log-file -
+web: gunicorn --chdir=/app/src website.wsgi:application --timeout 240 --graceful-timeout 230 --log-file -
 # worker: python /app/src/website/celery/worker.py
 # django_email_queue: python -m django_email_queue.worker
 # always keep the task with the beat at max 1 process

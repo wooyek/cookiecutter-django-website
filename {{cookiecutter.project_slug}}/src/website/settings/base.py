@@ -16,8 +16,11 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 
 from __future__ import absolute_import, unicode_literals
 
+import locale
 import logging
+# noinspection PyUnresolvedReferences
 import os
+# noinspection PyUnresolvedReferences
 from pathlib import Path
 
 logging.basicConfig(format='%(asctime)s %(levelname)-7s %(thread)-5d %(filename)s:%(lineno)s | %(funcName)s | %(message)s', datefmt='%H:%M:%S')
@@ -25,6 +28,9 @@ logging.getLogger().setLevel(logging.DEBUG)
 logging.disable(logging.NOTSET)
 
 logging.debug("Settings loading: %s" % __file__)
+
+locale.setlocale(locale.LC_ALL, '')
+# locale.setlocale(locale.LC_CTYPE)
 
 # ╭────────────────────────────────────────────────────────────────────────────
 # │ This is a composite strategy for setting up django website instance.
@@ -35,17 +41,25 @@ logging.debug("Settings loading: %s" % __file__)
 from .components.debug_toolbar import *  # noqa: F402 F403 isort:skip
 from .components.django_assets import *  # noqa: F402 F403 isort:skip
 # from .components.celery import *  # noqa: F402 F403 isort:skip
+# noinspection PyUnresolvedReferences
 from .components.import_export import *  # noqa: F402 F403 isort:skip
 from .components.pycountry import *  # noqa: F402 F403 isort:skip
+# noinspection PyUnresolvedReferences
 from .components.sentry import *  # noqa: F402 F403 isort:skip
+# noinspection PyUnresolvedReferences
 from .components.newrelic import *  # noqa: F402 F403 isort:skip
-# from .components.django_opt_out import *  # noqa: F402 F403 isort:skip
+# noinspection PyUnresolvedReferences
+from .components.django_opt_out import *  # noqa: F402 F403 isort:skip
 # from .components.django_email_queue import *  # noqa: F402 F403 isort:skip
-# from .components.django_filer import *  # noqa: F402 F403 isort:skip
+# noinspection PyUnresolvedReferences
+from .components.django_filer import *  # noqa: F402 F403 isort:skip
+# noinspection PyUnresolvedReferences
+# from .components.django_hunger import *  # noqa: F402 F403 isort:skip
 # from .components.oauth_toolkit import * # noqa: F402 F403 isort:skip
 # from .components.rest_framework import *  # noqa: F402 F403 isort:skip
 # from .components.gis import *  # noqa: F402 F403 isort:skip
 # from .components.intercom import *  # noqa: F402 F403 isort:skip
+# noinspection PyUnresolvedReferences
 from .components.pure_pagination import *  # noqa: F402 F403 isort:skip
 
 if 'GOOGLE_STORAGE_ID' in os.environ:
@@ -53,20 +67,30 @@ if 'GOOGLE_STORAGE_ID' in os.environ:
 
 # Other imports can cause change in core settings
 # we should import core last
-from .components.core import env, BASE_DIR  # noqa: F402 F403 isort:skip
 from .components.core import *  # noqa: F402 F403 isort:skip
+from .components import core  # noqa: F402 F403 isort:skip
 
 # │ Customizations made for this project only should go bellow
 # ╰────────────────────────────────────────────────────────────────────────────
 
+MIDDLEWARE += (  # noqa: F405
+    # https://docs.djangoproject.com/pl/2.1/ref/contrib/flatpages/#installation
+    # 'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
+    'django_user_agents.middleware.UserAgentMiddleware',
+)
 
 INSTALLED_APPS += (  # noqa: F405
+    # 'django.contrib.sites',
+    # 'django.contrib.flatpages',
+    'django.contrib.postgres',
     'bootstrapform',
+    'admin_ordering',
     # 'django_babel',
     # 'guardian',
     'reversion',
+    'django_user_agents',
     # 'django_filters',
-    'django_powerbank',
+    'django_powerbank.apps.DjangoPowerbankConfig',
     'django_error_views.apps.DjangoErrorViewsConfig',
     # 'localflavor',
     # 'django_gravatar',
@@ -82,10 +106,24 @@ TIME_ZONE = 'Europe/Warsaw'
 # https://docs.djangoproject.com/en/1.9/topics/i18n/translation/#how-django-discovers-language-preference
 import django_error_views  # noqa F402 isort:skip
 
-LOCALE_PATHS = [
+LOCALE_PATHS += [  # noqa: F405
     str(Path(django_error_views.__file__).parent / 'locales'),
     str(BASE_DIR / 'locales'),
 ]
 
 
-SANDBOX = env("SANDBOX", default=True, cast=bool)
+SANDBOX = core.env("SANDBOX", default=True, cast=bool)
+DEFAULT_PAGE_CACHE = core.env("DEFAULT_PAGE_CACHE", default=3600, cast=bool)
+
+USER_AGENTS_CACHE = 'default'
+def filter_deprecation_warnings(record):
+    warnings_to_suppress = [
+        'RemovedInDjango30Warning'
+    ]
+    msg = record.getMessage()
+    return not any([warn in msg
+                    for warn in warnings_to_suppress
+                    if not msg.startswith(str(core.BASE_DIR / 'src'))])
+
+
+logging.getLogger('py.warnings').addFilter(filter_deprecation_warnings)

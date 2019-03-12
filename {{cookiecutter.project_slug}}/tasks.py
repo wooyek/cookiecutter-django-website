@@ -19,28 +19,27 @@ import logging
 import os
 import shutil
 import sys
+import webbrowser
 from collections import OrderedDict
+from datetime import datetime
 from itertools import chain
 from pathlib import Path
 
 # noinspection PyPackageRequirements
+from urllib.request import pathname2url
+
 from invoke import call, task
 
 logging.basicConfig(format='%(asctime)s %(levelname)-7s %(thread)-5d %(filename)s:%(lineno)s | %(funcName)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-# logging.getLogger().setLevel(logging.INFO)
-# logging.disable(logging.NOTSET)
+logging.getLogger().setLevel(logging.INFO)
+logging.disable(logging.NOTSET)
 logging.debug('Loading %s', __name__)
-
 log = logging.getLogger(__name__)
 
 is_win = sys.platform == 'win32'
 ROOT_DIR = Path(__file__).parent.absolute()
-SRC_DIR = ROOT_DIR / 'src'
-VENV_DIR = ROOT_DIR / ".pve"
-VENV_BIN = VENV_DIR / ("Scripts" if is_win else "bin")
-PYTHON = VENV_BIN / 'python'
-PIP = VENV_BIN / 'pip'
-MANAGE = '{} {} '.format(PYTHON, SRC_DIR / 'manage.py')
+PROJ_TMP_DIR = ROOT_DIR / '.tmp'
+FIXTURES = ROOT_DIR / 'fixtures' / 'fixtures_config.yml'
 
 
 def get_current_version():
@@ -54,6 +53,7 @@ def get_current_version():
 # noinspection PyUnusedLocal
 @task
 def version(ctx):
+    ctx.run("python -V")
     print("Version: " + get_current_version())
 
 
@@ -64,19 +64,28 @@ def clean(ctx):
         logging.debug("Deleting: %s", item)
         item.unlink()
 
-    for item in Path(ROOT_DIR).rglob("__pycache__"):
-        logging.debug("Deleting: %s", item)
-        shutil.rmtree(str(item), ignore_errors=True)
+    log.info("Removing __pycache__ in sys.path folders")
+    for folder in sys.path:
+        for item in Path(folder).rglob("__pycache__"):
+            logging.debug("Deleting: %s", item)
+            shutil.rmtree(str(item), ignore_errors=True)
 
-    shutil.rmtree(str(ROOT_DIR / 'build'), ignore_errors=True)
-    shutil.rmtree(str(ROOT_DIR / 'example_project' / '.eggs'), ignore_errors=True)
-    shutil.rmtree(str(ROOT_DIR / '.eggs'), ignore_errors=True)
-    shutil.rmtree(str(ROOT_DIR / '.tox'), ignore_errors=True)
-    shutil.rmtree(str(ROOT_DIR / '.tmp'), ignore_errors=True)
-    shutil.rmtree(str(ROOT_DIR / '.coverage'), ignore_errors=True)
-    shutil.rmtree(str(ROOT_DIR / '.htmlcov'), ignore_errors=True)
-    shutil.rmtree(str(ROOT_DIR / '.pytest_cache'), ignore_errors=True)
-    shutil.rmtree(str(ROOT_DIR / '.cache'), ignore_errors=True)
+    folders = (
+        ROOT_DIR / 'build',
+        ROOT_DIR / 'example_project' / '.eggs',
+        ROOT_DIR / '.eggs',
+        ROOT_DIR / '.tox',
+        ROOT_DIR / '.coverage',
+        ROOT_DIR / '.htmlcov',
+        ROOT_DIR / '.pytest_cache',
+        ROOT_DIR / '.cache',
+        PROJ_TMP_DIR,
+    )
+
+    for folder in folders:
+        print("Removing folder {}".format(folder))
+        shutil.rmtree(str(folder), ignore_errors=True)
+
     ctx.run('git checkout -- .tmp')
 
 
@@ -87,7 +96,24 @@ def check(ctx):
     ctx.run("isort --check-only --diff --recursive src tests setup.py")
     ctx.run("python setup.py check --strict --metadata --restructuredtext")
     ctx.run("check-manifest  --ignore .idea,.idea/* .")
-    ctx.run("pytest --cov=src --cov=tests --cov-fail-under=100")
+    ctx.run("pytest --cov=src --cov=tests --cov-fail-under=5 -n auto --html="+str(PROJ_TMP_DIR / 'pytest.html'))
+
+
+@task
+def coverage(ctx):
+    ctx.run("pytest --cov=src --cov=tests --cov-fail-under=5 --cov-report html")
+    webbrowser.open("file://" + pathname2url(str(ROOT_DIR / '.tmp' / 'coverage' / 'index.html')))
+
+
+@task
+def docs(ctx, browse=False, build=True):
+    if build:
+        ctx.run("sphinx-build -b html docs dist/docs")
+        ctx.run("sphinx-build -b linkcheck docs dist/docs")
+        ctx.run("sphinx-build -b spelling docs dist/docs")
+        ctx.run("cat dist/docs/output.txt")
+    if browse:
+        webbrowser.open("file://" + pathname2url(str(ROOT_DIR / 'dist' / 'docs' / 'index.html')))
 
 
 @task
@@ -97,16 +123,9 @@ def isort(ctx):
 
 
 @task
-def detox(ctx):
-    """Run detox with a subset of envs and report run separately"""
-    envs = ctx.run("tox -l").stdout.splitlines()
-    envs.remove('clean')
-    envs.remove('report')
-    envs = [e for e in envs if not e.startswith('py2')]
-    log.info("Detox a subset of environments: %s", envs)
-    ctx.run("tox -e clean")
-    ctx.run("detox --skip-missing-interpreters -e " + ",".join(envs))
-    ctx.run("tox -e report")
+def tox(ctx):
+    """Run tox in paralel"""
+    ctx.run("tox --parallel auto -o", pty=True)
 
 
 @task
@@ -172,11 +191,22 @@ def sync_master(ctx):
     ctx.run("git push --follow-tags")
 
 
-@task
-def bump(ctx):
+@task()
+def bump(ctx, minor=False):
     """Increment version number"""
     # ctx.run("bumpversion patch --no-tag")
-    ctx.run("bumpversion patch")
+    if minor:
+        ctx.run("bumpversion minor")
+    else:	
+        ctx.run("bumpversion patch --allow-dirty")
+    import re
+    version_file = ROOT_DIR / "src" / "website" / "__init__.py"
+    text = version_file.read_text()
+    new_date = "__date__ = '{:%Y-%m-%d %H:%M}'".format(datetime.now())
+    text = re.sub(r"__date__ = .*", new_date, text)
+    version_file.write_text(text)
+    ctx.run('git add '+str(version_file))
+    ctx.run('git commit -m "Update __date__" --allow-empty')
 
 
 @task()
@@ -217,7 +247,7 @@ def assets(ctx):
 
 
 # noinspection PyUnusedLocal
-@task(check, sync, detox)
+@task(check, sync, tox)
 def release_start(ctx):
     """Start a release cycle with publishing a release branch"""
     ctx.run("git flow release start v{}-release".format(get_current_version()))
@@ -227,14 +257,14 @@ def release_start(ctx):
 
 
 # noinspection PyUnusedLocal
-@task(check, sync, detox, post=[])
+@task(check, sync, tox, post=[])
 def release_finish(ctx):
     """Finish a release cycle with publishing a release branch"""
     ctx.run("git flow release finish --fetch --push")
 
 
 # noinspection PyUnusedLocal
-@task(isort, check, pip_compile, sync, detox, bump, sync_master)
+@task(isort, check, pip_compile, sync, tox, bump, sync_master)
 def release(ctx):
     """Build new package version release and sync repo"""
 
@@ -248,23 +278,22 @@ def publish(ctx):
 
 
 @task
-def locales(ctx):
+def locales_django(ctx):
     """
     Collect and compile translation strings
     """
     # https://docs.djangoproject.com/en/dev/ref/django-admin/#django-admin-makemessages
+    ctx.run('python manage.py makemessages -v 3 --no-wrap --ignore ".*" --locale=pl_PL')
+    ctx.run('python manage.py compilemessages -v 3  --locale pl_PL')
+
+
+@task
+def locales_babel(ctx):
     """
-    python manage.py makemessages -v 3 --no-wrap --ignore ".*" --locale=pl_PL
-    python manage.py compilemessages -v 3
+    Collect and compile translation strings
     """
-    tmp = ROOT_DIR / ".tmp"
-    if not tmp.exists():
-        os.makedirs(str(tmp))
-    locale = ROOT_DIR / "src" / "locale"
-    if not locale.exists():
-        os.makedirs(str(locale))
     # http://babel.edgewall.org/wiki/BabelDjango
-    pybabel = str(VENV_BIN / 'pybabel')
+    pybabel = str('pybabel')
     ctx.run(pybabel + " extract -F locale/babel.cfg -o locale/django.pot --no-wrap --sort-output .")
     # create locales firs
     # pybabel init -D django -i locale/django.pot -d locale -l es
@@ -276,6 +305,20 @@ def locales(ctx):
     # ctx.run(pybabel + " update -D djangojs -i locale/djangojs.pot -d locale --previous --no-wrap")
     ctx.run("django-admin makemessages -d djangojs -i static -i node_modules")
     ctx.run(pybabel + " compile -D djangojs -d locale --statistics")
+
+
+# noinspection PyUnusedLocal
+@task(post=[locales_django])
+def locales(ctx):
+    """
+    Collect and compile translation strings
+    """
+    tmp = ROOT_DIR / ".tmp"
+    if not tmp.exists():
+        os.makedirs(str(tmp))
+    locale = ROOT_DIR / "src" / "locale"
+    if not locale.exists():
+        os.makedirs(str(locale))
 
 
 @task
@@ -296,30 +339,49 @@ def trigger_tests(ctx):
     ctx.run("git push origin develop", env=env)
 
 
-@task(pre=[assets, release], post=[])
-def deploy(ctx, remote='dev', branch='master'):
+@task(iterable=['remote'], help={'remote': "Git remote used to ship local repository"})
+def ship(ctx, remote='dev', branch='master'):
     """
-    Collect and compile assets, add, commit and push to remote
+    Ship current version to a remote environment
     """
     ctx.run("git checkout {branch}".format(branch=branch))
     ctx.run("git push {remote} {branch}  --verbose".format(remote=remote, branch=branch))
     ctx.run("git checkout develop")
-	# Uncomment this to show release script output
-    # ctx.run("heroku logs -r {remote}".format(remote=remote))  
-	# Uncomment this to show docker running containers
-    # ctx.run("ssh developer@production.example.com docker ps")
-    print("[ OK ] Deployed: " + get_current_version())
+    # Uncomment this to show release script output
+    # ctx.run("heroku logs -r {remote}".format(remote=remote))
+    # Uncomment this to show docker running containers
+    print("===== Checking out free space")
+    ctx.run("ssh jsk@moniuszko.tk df -h")
+    print("===== Listing containers")
+    ctx.run("ssh jsk@moniuszko.tk docker ps")
+    print("[ OK ] Deployed: {} v{}".format(remote, get_current_version()))
 
 
 # noinspection PyUnusedLocal
-@task(pre=[call(deploy, remote='production', branch='master')])
+@task(pre=[isort, pip_compile, sync, bump, sync_master, ship], post=[])
+def yolo(ctx):
+    """
+    A dirty no test deploy
+    """
+
+
+# noinspection PyUnusedLocal
+@task(pre=[assets, release, ship], post=[])
+def deploy(ctx):
+    """
+    Collect and compile assets, add, commit and push to remote
+    """
+
+
+# noinspection PyUnusedLocal
+@task(pre=[assets, release, call(ship, remote='production', branch='master')])
 def deploy_production(ctx):
     """Deploy to production remote"""
     pass
 
 
 # noinspection PyUnusedLocal
-@task(pre=[call(deploy, remote='staging', branch='master')])
+@task(pre=[assets, release, call(ship, remote='staging', branch='master')])
 def deploy_staging(ctx):
     """Deploy to staging remote"""
     pass
@@ -334,22 +396,46 @@ def vagrant(ctx):
     ctx.run("git push vagrant develop --verbose")
 
 
-FIXTURES = OrderedDict((
-    ("auth", (
-        "auth.Group",
-        "auth.User",
-    )),
-))
-
 
 @task
 def dump(ctx):
     """Dump django fixtures with initial and test data"""
-    for file, what in FIXTURES.items():
+
+    with FIXTURES.open() as f:
+        import yaml
+        fixtures = yaml.load(f)
+
+    for file, what in fixtures.items():
         log.info("Dumping fixture: %s" % file)
-        cmd = "python manage.py dumpdata --format=yaml --natural-foreign --natural-primary {} > " + str(ROOT_DIR / 'fixtures' / '{}.yaml')
+        cmd = "python manage.py dumpdata --format=json --indent 2 --natural-foreign --natural-primary {} > " + str(ROOT_DIR / 'fixtures' / '{}.json')
         cmd = cmd.format(" ".join(what), file)
         log.debug(cmd)
+        ctx.run(cmd)
+
+@task
+def load_fixtures(ctx):
+    """Load initial and test data fixtures"""
+    import yaml
+
+    _mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
+
+    def dict_representer(dumper, data):
+        return dumper.represent_dict(data.iteritems())
+
+    def dict_constructor(loader, node):
+        return OrderedDict(loader.construct_pairs(node))
+
+    yaml.add_representer(OrderedDict, dict_representer)
+    yaml.add_constructor(_mapping_tag, dict_constructor)
+
+    with FIXTURES.open() as f:
+        fixtures = yaml.load(f)
+
+    for fixture in fixtures.keys():
+        fixture = str(ROOT_DIR / 'fixtures' / (fixture + '.json'))
+        log.info("Loading fixture: %s" % fixture)
+        cmd = "python manage.py loaddata " + fixture
+        logging.debug(cmd)
         ctx.run(cmd)
 
 
@@ -362,17 +448,6 @@ def reset_db(ctx):
     if not data.exists():
         os.makedirs(str(data))
     ctx.run("python manage.py migrate")
-
-
-@task
-def load_fixtures(ctx):
-    """Load initial and test data fixtures"""
-    for fixture in FIXTURES.keys():
-        fixture = str(ROOT_DIR / 'fixtures' / (fixture + '.yaml'))
-        log.info("Dumping fixture: %s" % fixture)
-        cmd = "python manage.py loaddata " + fixture
-        logging.debug(cmd)
-        ctx.run(cmd)
 
 
 @task(pre=[reset_db, load_fixtures])

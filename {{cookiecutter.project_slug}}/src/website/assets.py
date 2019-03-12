@@ -10,13 +10,17 @@ assets_js = PosixPath('assets') / 'js'
 
 CSS = (
     assets_css / "bootstrap4.css",
-    assets_css / "font-awesome4.css",
-    assets_css / "screen.css",
+    # assets_css / "font-awesome4.css",
+    assets_css / "font-awesome5.css",
+    assets_css / "default.css",
 )
 
 JS = (
-    assets_js / "jquery.js",
+    # assets_js / "jquery.js",
+    # assets_js / "jquery.min.js",
     assets_js / "bootstrap.js",
+    # assets_js / "moment-with-locales.js",
+    # assets_js / "bootstrap-datetimepicker.js",
     assets_js / "main.js",
 )
 

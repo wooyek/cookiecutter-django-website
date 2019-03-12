@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 
-# Loading here any other settings is a possibly a destructive operation
+# Loading here any other settings is possibly a destructive operation
 # as purposed settings modules can modify sys.environment
 # leading to setting up configuration variables that should remain empty
 

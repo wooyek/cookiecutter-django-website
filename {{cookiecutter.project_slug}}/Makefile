@@ -96,7 +96,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/{{ cookiecutter.package_name }}*.rst
 	rm -f docs/website*.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ -H "Api docs" src */migrations/*
+	sphinx-apidoc -o docs/ -H "Api docs" src */migrations/* */settings/* */wsgi.py */urls.py
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 

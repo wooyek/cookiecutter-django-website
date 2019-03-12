@@ -33,6 +33,11 @@ logging.debug("settings.DEBUG: %s" % settings.DEBUG)
 
 
 def setup_newrelic(app):
+    # By default newrelic should be configured with env
+    if 'NEW_RELIC_LICENSE_KEY' not in os.environ:
+        logging.warning("Missing NEW_RELIC_LICENSE_KEY environment setting")
+        return app
+
     import newrelic.agent  # noqa: F402 isort:skip
     from pathlib import Path  # noqa: F402 isort:skip
     newrelic.agent.initialize(str(Path(__file__).parents[2] / 'newrelic.ini'))
@@ -44,9 +49,9 @@ def setup_sentry(app):
     return Sentry(app)
 
 
-def setup_white_noise(app):
-    from whitenoise.django import DjangoWhiteNoise  # noqa: F402 isort:skip
-    return DjangoWhiteNoise(app)
+# def setup_white_noise(app):
+#     from whitenoise.django import DjangoWhiteNoise  # noqa: F402 isort:skip
+#     return DjangoWhiteNoise(app)
 
 
 def setup_celery():
@@ -60,8 +65,8 @@ def setup_celery():
 from django.core.wsgi import get_wsgi_application  # noqa: F402 isort:skip
 
 application = get_wsgi_application()
-# application = setup_newrelic(application)
+application = setup_newrelic(application)
 application = setup_sentry(application)
-application = setup_white_noise(application)
+# application = setup_white_noise(application)
 
 logging.debug("application: %s" % application)

@@ -14,12 +14,15 @@ include *.txt
 include .bumpversion.cfg
 include .coveragerc
 include .editorconfig
+include .buildpacks
+include .babelrc
 include Makefile
 include tox.ini
 include *.json
 include Procfile
 include .env Pipfile Pipfile.lock
 include .tmp/.gitignore
+include media/.gitignore
 
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
@@ -54,12 +57,17 @@ recursive-include tests *.py
 recursive-include data *.md
 recursive-include data *.sqlite3
 recursive-include fixtures *.json
+recursive-include fixtures *.xls
+recursive-include fixtures *.xlsx
+recursive-include fixtures *.yml
 recursive-include locale *.cfg
 recursive-include locale *.po
 recursive-include logs *.md
 recursive-include src *.txt
 recursive-include static *.* *
 recursive-include templates *.html
+recursive-include templates *.txt
+recursive-include templates *.xml
 recursive-include assets *.md
 recursive-include styles *.md
 recursive-include vendor *.md
@@ -70,12 +78,18 @@ recursive-include assets *.json
 recursive-include assets *.map
 recursive-include assets *.otf
 recursive-include assets *.png
+recursive-include assets *.gif
+recursive-include assets *.jpg
 recursive-include assets *.svg
 recursive-include assets *.ttf
 recursive-include assets *.woff
 recursive-include assets *.woff2
+recursive-include theme *.svg
 recursive-include fixtures *.csv
 recursive-include fixtures *.yaml
+recursive-include fixtures *.tsv
+recursive-include etc *.cert
+recursive-include etc *.key
 recursive-include theme *.js
 recursive-include theme *.md
 recursive-include theme *.scss

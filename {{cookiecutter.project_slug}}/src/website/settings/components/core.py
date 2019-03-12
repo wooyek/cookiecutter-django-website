@@ -30,9 +30,8 @@ gettext_noop = lambda s: s  # noqa: E731
 DEBUG = env('DEBUG', bool, False)
 logging.debug("DEBUG: %s", DEBUG)
 ENVIRONMENT_NAME = env('ENVIRONMENT_NAME', default='')
+ENVIRONMENT_COLOR = env('ENVIRONMENT_COLOR', default='')
 SOURCE_VERSION = env('SOURCE_VERSION', default='') or env('GIT_REV', default='')
-
-SITE_ID = 1
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -70,6 +69,11 @@ if 'ADMINS' in os.environ:
     addresses = getaddresses(admins)
     ADMINS = [(name, named_email) for ((name, email), named_email) in zip(addresses, admins)]
 
+ADMIN_SITE_TITLE = env('ADMIN_SITE_TITLE', default=None)
+ADMIN_SITE_HEADER = env('ADMIN_SITE_HEADER', default=None)
+ADMIN_SITE_HEADER_BG = env('ADMIN_SITE_HEADER_BG', default=None)
+ADMIN_INDEX_TITLE = env('ADMIN_INDEX_TITLE', default=None)
+
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default="Help <help@{domain}>".format(domain=BASE_DOMAIN))
 HELP_EMAIL = env('HELP_EMAIL', default=DEFAULT_FROM_EMAIL)
 ERR_EMAIL = env('ERR_EMAIL', default="errors@{domain}".format(domain=BASE_DOMAIN))
@@ -85,11 +89,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admindocs',
 )
 
 MIDDLEWARE = (
     # https://docs.djangoproject.com/en/1.10/ref/middleware/#django.middleware.security.SecurityMiddleware,
     # 'django.middleware.security.SecurityMiddleware',
+    # http://whitenoise.evans.io/en/stable/django.html#django-middleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     # 'django_babel.middleware.LocaleMiddleware',
@@ -118,6 +125,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'website.misc.context_processors.website_settings',
@@ -126,6 +134,9 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
+            'libraries': {
+                'urls': 'website.templatetags.urls',
+            },
         },
     },
 ]
@@ -169,7 +180,8 @@ USE_I18N = True
 
 # https://docs.djangoproject.com/en/1.9/topics/i18n/translation/#how-django-discovers-language-preference
 LOCALE_PATHS = [
-    str(BASE_DIR / 'locales'),
+    str(BASE_DIR / 'locale'),
+    str(BASE_DIR / 'src' / 'locale'),
 ]
 
 USE_L10N = True
@@ -189,6 +201,7 @@ FORMAT_MODULE_PATH = [
 STATIC_URL = BASE_URL + '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR / 'media')
+MEDIA_SERVED = env.bool('MEDIA_SERVED', default=False)
 STATIC_ROOT = str(BASE_DIR / 'static')
 
 STATICFILES_DIRS = (
@@ -197,7 +210,7 @@ STATICFILES_DIRS = (
 )
 
 # The default file storage backend used during the build process
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -332,10 +345,16 @@ LOGGING = {
             'propagate': True,
             'level': 'WARNING',
         },
-        # 'django.security.DisallowedHost': {
-        #     'handlers': [],
-        #     'propagate': False,
-        # },
+        'faker': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'WARNING',
+        },
+        'MARKDOWN': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'WARNING',
+        },
     },
     'root': {
         'level': 'DEBUG',
@@ -343,6 +362,21 @@ LOGGING = {
     }
 }
 
+if env('DISABLE_DISALLOWED_HOST_ERRORS', default=True):
+    # This will limit DisallowedHost logging to the console
+    # noinspection PyTypeChecker
+    LOGGING['loggers']['django.security.DisallowedHost']['handlers'] = ['console']
+
+
 # Default exception reporter filter class used in case none has been
 # specifically assigned to the HttpRequest instance.
 DEFAULT_EXCEPTION_REPORTER_FILTER = 'website.misc.debug.SaferExceptionReporterFilter'
+
+# Change file uploads for container compatibility.
+FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_TEMP_DIR = env("FILE_UPLOAD_TEMP_DIR", default=None)
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
+
+DEFAULT_TEMPLATE_CACHE = env('DEFAULT_TEMPLATE_CACHE', default=900)

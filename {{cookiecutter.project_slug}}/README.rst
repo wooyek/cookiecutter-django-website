@@ -72,7 +72,7 @@ To run an example project for this django reusable app, click the button below a
 Quickstart
 ----------
 
-1. Fork the `{{ cookiecutter.project_slug }}` repo on bitbucket.org
+1. Fork the `{{ cookiecutter.project_slug }}` repo on `{{ cookiecutter.project_url }}`
 2. Clone your fork locally::
 
     $ git clone {{ cookiecutter.repo_url }}
@@ -119,3 +119,4 @@ This package was created with Cookiecutter_ and the `wooyek/cookiecutter-django-
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`wooyek/cookiecutter-django-app`: https://github.com/wooyek/cookiecutter-django-app
 .. _`pipenv`: https://docs.pipenv.org/install
+.. _`Dokku PaaS`: http://dokku.viewdocs.io/dokku/getting-started/installation/

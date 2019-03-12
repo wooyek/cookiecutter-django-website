@@ -25,7 +25,10 @@ core.LOGGING['loggers']['raven'] = {
 
 core.LOGGING.setdefault('filters', {})['sentry_filter'] = {
     '()': 'website.misc.sentry.SentryLogFilter',
-    'exclude_loggers': 'backoff',
+    'exclude_loggers': [
+        'backoff',
+        'django.security.DisallowedHost'
+    ],
 }
 
 core.LOGGING['handlers']['sentry'] = {
