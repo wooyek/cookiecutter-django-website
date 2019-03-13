@@ -12,13 +12,13 @@ django-admin-relation-links
 django-assets
 django-bootstrap-form
 django-debug-toolbar
-# django-email-queue
+django-email-queue
 django-environ
 django-error-views
 django-formtools
 django-import-export
-#django-localflavor
-# django-opt-out[sparkpost]
+# django-localflavor
+django-opt-out[sparkpost]
 django-pascal-templates
 # django-polymodels
 django-powerbank
@@ -38,6 +38,7 @@ psycopg2-binary
 pycountry
 pytz
 pathlib ; python_version < '3.3'
+pendulum
 # version 2018.11.3 has installation issues
 # regex==2018.8.29
 # sorl-thumbnail

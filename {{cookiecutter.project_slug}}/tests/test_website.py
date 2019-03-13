@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for {{ cookiecutter.package_name }} `website` package."""
+"""Tests for this project `website` package."""
 
 import pytest
 
@@ -25,5 +25,5 @@ def test_content(response):
 
 
 def test_version_exists():
-    """This is a stupid test dummy validating import of {{ cookiecutter.package_name }}"""
+    """This is a stupid test dummy validating import of website"""
     assert website.__version__

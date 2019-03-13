@@ -5,20 +5,21 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 """
 from django.conf import settings
 from django.conf.urls import include
-from django.contrib import admin
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib.sitemaps.views import sitemap
+from django.contrib.auth.views import PasswordResetView
 from django.urls import path
+from django.views.generic import TemplateView
 from django.views.i18n import JavaScriptCatalog
 from django_error_views.handlers import *  # noqa F401
 
 from .admin import custom_admin_site
 from .misc import debug
 from .sitemaps import sitemaps
-sitemaps = {}
 
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
-    path('admin/', include('smuggler.urls')),  # before admin url patterns!
+    # path('admin/', include('smuggler.urls')),  # before admin url patterns!
     path('admin/', custom_admin_site.urls),
     path('err/', debug.ErrView.as_view(), name='err'),
     path('i18n/', include('django.conf.urls.i18n')),
@@ -26,8 +27,8 @@ urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('admin/password_reset/', auth_views.PasswordResetView.as_view(), name='admin_password_reset'),
-    path('unsubscribe/', include(django_opt_out.urls)),
+    path('admin/password_reset/', PasswordResetView.as_view(), name='admin_password_reset'),
+    path('unsubscribe/', include('django_opt_out.urls')),
     path('', include('{{ cookiecutter.package_name }}.urls')),
 ]
 

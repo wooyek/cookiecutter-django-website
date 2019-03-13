@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `{{ cookiecutter.package_name }}` package."""
+"""Tests for this projects CLI package."""
 
 from click.testing import CliRunner
 

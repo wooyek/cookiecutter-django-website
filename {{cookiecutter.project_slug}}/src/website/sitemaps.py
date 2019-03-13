@@ -20,4 +20,4 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return reverse(item)
 
 
-sitemaps = moniuszko_cms.sitemaps.sitemaps
+sitemaps = {{ cookiecutter.package_name }}.sitemaps.sitemaps
